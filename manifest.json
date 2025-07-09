@@ -1,0 +1,180 @@
+{
+  "name": "AI与Web3导航",
+  "short_name": "AI导航",
+  "description": "探索最前沿的AI应用和Web3技术，发现优质的开发工具和学习资源",
+  "start_url": "./splash.html",
+  "display": "standalone",
+  "theme_color": "#6366f1",
+  "background_color": "#667eea",
+  "orientation": "portrait-primary",
+  "scope": "./",
+  "lang": "zh-CN",
+  "categories": ["productivity", "education", "navigation"],
+  "icons": [
+    {
+      "src": "icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/desktop.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "screenshots/mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "AI应用",
+      "short_name": "AI",
+      "description": "浏览AI相关应用",
+      "url": "./#ai-section",
+      "icons": [
+        {
+          "src": "icons/icon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Web3应用",
+      "short_name": "Web3",
+      "description": "浏览Web3相关应用",
+      "url": "./#web3-section",
+      "icons": [
+        {
+          "src": "icons/icon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "开发工具",
+      "short_name": "工具",
+      "description": "浏览开发工具",
+      "url": "./#tools-section",
+      "icons": [
+        {
+          "src": "icons/icon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "学习资源",
+      "short_name": "学习",
+      "description": "浏览学习资源",
+      "url": "./#learn-section",
+      "icons": [
+        {
+          "src": "icons/icon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "splash_pages": [
+    {
+      "src": "splash/splash-2048x2732.png",
+      "sizes": "2048x2732"
+    },
+    {
+      "src": "splash/splash-1668x2388.png",
+      "sizes": "1668x2388"
+    },
+    {
+      "src": "splash/splash-1536x2048.png",
+      "sizes": "1536x2048"
+    },
+    {
+      "src": "splash/splash-1125x2436.png",
+      "sizes": "1125x2436"
+    },
+    {
+      "src": "splash/splash-1242x2208.png",
+      "sizes": "1242x2208"
+    },
+    {
+      "src": "splash/splash-750x1334.png",
+      "sizes": "750x1334"
+    },
+    {
+      "src": "splash/splash-640x1136.png",
+      "sizes": "640x1136"
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+aiapp",
+      "url": "./?protocol=%s"
+    }
+  ],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": ["navigate-existing", "auto"]
+  },
+  "handle_links": "preferred",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "version": "1.0.0",
+  "author": "AI与Web3导航团队",
+  "permissions": [
+    "storage"
+  ],
+  "file_handlers": [
+    {
+      "action": "./",
+      "accept": {
+        "application/json": [".json"],
+        "text/plain": [".txt"]
+      }
+    }
+  ]
+} 

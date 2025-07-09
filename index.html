@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI与Web3导航</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="icons/icon-192x192.png" type="image/png">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="AI与Web3导航">
+</head>
+<body>
+    <!-- 主应用 -->
+    <div id="app" class="app-container">
+        <!-- 顶部导航 -->
+        <header class="top-nav">
+            <div class="nav-left">
+                <div class="logo">
+                    <span class="logo-icon">🚀</span>
+                    <span class="logo-text">AI与Web3导航</span>
+                </div>
+            </div>
+            <div class="nav-right">
+                <button class="search-btn" id="searchBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+                <button class="menu-btn" id="menuBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- 主要内容区域 -->
+        <main class="main-content">
+            <!-- 搜索框 -->
+            <div class="search-container" id="searchContainer">
+                <div class="search-box">
+                    <input type="text" placeholder="搜索应用..." id="searchInput">
+                    <button class="search-close" id="searchClose">×</button>
+                </div>
+            </div>
+
+            <!-- AI 应用板块 -->
+            <section class="section" id="ai-section">
+                <div class="section-header">
+                    <h2>🤖 AI 应用</h2>
+                    <span class="section-count">8个应用</span>
+                </div>
+                <div class="cards-grid" id="aiCards"></div>
+            </section>
+
+            <!-- Web3 应用板块 -->
+            <section class="section" id="web3-section">
+                <div class="section-header">
+                    <h2>🌐 Web3 应用</h2>
+                    <span class="section-count">6个应用</span>
+                </div>
+                <div class="cards-grid" id="web3Cards"></div>
+            </section>
+
+            <!-- 开发工具板块 -->
+            <section class="section" id="tools-section">
+                <div class="section-header">
+                    <h2>🛠️ 开发工具</h2>
+                    <span class="section-count">8个工具</span>
+                </div>
+                <div class="cards-grid" id="toolsCards"></div>
+            </section>
+
+            <!-- 学习资源板块 -->
+            <section class="section" id="learn-section">
+                <div class="section-header">
+                    <h2>📚 学习资源</h2>
+                    <span class="section-count">4个资源</span>
+                </div>
+                <div class="cards-grid" id="learnCards"></div>
+            </section>
+
+            <!-- 实用工具板块 -->
+            <section class="section" id="utils-section">
+                <div class="section-header">
+                    <h2>🔧 实用工具</h2>
+                    <span class="section-count">6个工具</span>
+                </div>
+                <div class="cards-grid" id="utilsCards"></div>
+            </section>
+        </main>
+
+        <!-- 底部导航 -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-section="ai-section">
+                <div class="nav-icon">🤖</div>
+                <span>AI应用</span>
+            </button>
+            <button class="nav-item" data-section="web3-section">
+                <div class="nav-icon">🌐</div>
+                <span>Web3</span>
+            </button>
+            <button class="nav-item" data-section="tools-section">
+                <div class="nav-icon">🛠️</div>
+                <span>开发工具</span>
+            </button>
+            <button class="nav-item" data-section="learn-section">
+                <div class="nav-icon">📚</div>
+                <span>学习</span>
+            </button>
+            <button class="nav-item" data-section="utils-section">
+                <div class="nav-icon">🔧</div>
+                <span>实用工具</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- 侧边菜单 -->
+    <div id="side-menu" class="side-menu">
+        <div class="side-menu-content">
+            <div class="side-menu-header">
+                <h3>🚀 应用菜单</h3>
+                <button class="side-menu-close" id="sideMenuClose">×</button>
+            </div>
+            <div class="side-menu-body">
+                <div class="menu-section">
+                    <h4>📊 统计信息</h4>
+                    <div class="menu-stats">
+                        <div class="stat-item clickable-stat" data-section="ai-section">
+                            <span class="stat-label">AI应用</span>
+                            <div class="stat-right">
+                                <span class="stat-value">8个</span>
+                                <span class="stat-arrow">→</span>
+                            </div>
+                        </div>
+                        <div class="stat-item clickable-stat" data-section="web3-section">
+                            <span class="stat-label">Web3应用</span>
+                            <div class="stat-right">
+                                <span class="stat-value">6个</span>
+                                <span class="stat-arrow">→</span>
+                            </div>
+                        </div>
+                        <div class="stat-item clickable-stat" data-section="tools-section">
+                            <span class="stat-label">开发工具</span>
+                            <div class="stat-right">
+                                <span class="stat-value">8个</span>
+                                <span class="stat-arrow">→</span>
+                            </div>
+                        </div>
+                        <div class="stat-item clickable-stat" data-section="learn-section">
+                            <span class="stat-label">学习资源</span>
+                            <div class="stat-right">
+                                <span class="stat-value">4个</span>
+                                <span class="stat-arrow">→</span>
+                            </div>
+                        </div>
+                        <div class="stat-item clickable-stat" data-section="utils-section">
+                            <span class="stat-label">实用工具</span>
+                            <div class="stat-right">
+                                <span class="stat-value">6个</span>
+                                <span class="stat-arrow">→</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="menu-section">
+                    <h4>⚙️ 应用设置</h4>
+                    <div class="menu-options">
+                        <button class="menu-option" id="toggleTheme">
+                            <span class="option-icon">🌙</span>
+                            <span class="option-text">深色模式</span>
+                        </button>
+                        <button class="menu-option" id="clearCache">
+                            <span class="option-icon">🗑️</span>
+                            <span class="option-text">清除缓存</span>
+                        </button>
+                        <button class="menu-option" id="refreshData">
+                            <span class="option-icon">🔄</span>
+                            <span class="option-text">刷新数据</span>
+                        </button>
+                        <button class="menu-option" id="aboutApp">
+                            <span class="option-icon">ℹ️</span>
+                            <span class="option-text">关于应用</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="menu-section">
+                    <h4>🔗 快速链接</h4>
+                    <div class="menu-links">
+                        <a href="https://github.com" target="_blank" class="menu-link">
+                            <span class="link-icon">🐙</span>
+                            <span class="link-text">GitHub</span>
+                        </a>
+                        <a href="test-pwa.html" target="_blank" class="menu-link">
+                            <span class="link-icon">🧪</span>
+                            <span class="link-text">功能测试</span>
+                        </a>
+                        <a href="generate-icons.html" target="_blank" class="menu-link">
+                            <span class="link-icon">🎨</span>
+                            <span class="link-text">图标生成</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="side-menu-overlay" id="sideMenuOverlay"></div>
+    </div>
+
+    <!-- PWA 安装提示 -->
+    <div id="install-prompt" class="install-prompt">
+        <div class="install-content">
+            <div class="install-icon">📱</div>
+            <div class="install-text">
+                <h3>安装到桌面</h3>
+                <p>添加到主屏幕，享受更佳的使用体验</p>
+            </div>
+            <div class="install-actions">
+                <button id="installBtn" class="install-btn">安装</button>
+                <button id="dismissBtn" class="dismiss-btn">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 应用详情模态框 -->
+    <div id="app-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title"></h3>
+                <button class="modal-close" id="modalClose">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="app-detail">
+                    <div class="app-icon" id="modal-icon"></div>
+                    <div class="app-info">
+                        <p id="modal-description"></p>
+                        <div class="app-stats">
+                            <span class="stat">评分: <span id="modal-rating"></span></span>
+                            <span class="stat">用户: <span id="modal-users"></span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="app-actions">
+                    <button class="action-btn primary" id="modal-visit">访问应用</button>
+                    <button class="action-btn" id="modal-share">分享</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html> 

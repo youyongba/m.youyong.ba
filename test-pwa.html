@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PWA 功能测试</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .test-section h2 {
+            color: #6366f1;
+            margin-top: 0;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .error {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+        .info {
+            background: #e0f2fe;
+            color: #0c4a6e;
+        }
+        button {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #4f46e5;
+        }
+        .file-check {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .file-exists {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .file-missing {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 PWA 功能测试</h1>
+        
+        <div class="test-section">
+            <h2>📁 文件检查</h2>
+            <div id="fileChecks"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🔧 Service Worker 状态</h2>
+            <div id="swStatus"></div>
+            <button onclick="testServiceWorker()">测试 Service Worker</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>📱 PWA 安装状态</h2>
+            <div id="pwaStatus"></div>
+            <button onclick="testPWAInstall()">测试 PWA 安装</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>🌐 离线功能</h2>
+            <div id="offlineStatus"></div>
+            <button onclick="testOfflineMode()">测试离线模式</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>📋 Manifest 配置</h2>
+            <div id="manifestStatus"></div>
+            <button onclick="testManifest()">测试 Manifest</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>🎯 应用功能</h2>
+            <div id="appStatus"></div>
+            <button onclick="testAppFeatures()">测试应用功能</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>📊 性能指标</h2>
+            <div id="performanceStatus"></div>
+            <button onclick="testPerformance()">测试性能</button>
+        </div>
+    </div>
+
+    <script>
+        // 检查文件是否存在
+        async function checkFiles() {
+            const requiredFiles = [
+                'index.html',
+                'styles.css',
+                'app.js',
+                'sw.js',
+                'manifest.json',
+                'icons/icon-192x192.png'
+            ];
+            
+            const fileChecks = document.getElementById('fileChecks');
+            fileChecks.innerHTML = '';
+            
+            for (const file of requiredFiles) {
+                try {
+                    const response = await fetch(file);
+                    const exists = response.ok;
+                    const div = document.createElement('div');
+                    div.className = `file-check ${exists ? 'file-exists' : 'file-missing'}`;
+                    div.textContent = `${file}: ${exists ? '✅ 存在' : '❌ 缺失'}`;
+                    fileChecks.appendChild(div);
+                } catch (error) {
+                    const div = document.createElement('div');
+                    div.className = 'file-check file-missing';
+                    div.textContent = `${file}: ❌ 检查失败`;
+                    fileChecks.appendChild(div);
+                }
+            }
+        }
+        
+        // 测试 Service Worker
+        async function testServiceWorker() {
+            const status = document.getElementById('swStatus');
+            
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registration = await navigator.serviceWorker.getRegistration();
+                    if (registration) {
+                        status.innerHTML = `
+                            <div class="status success">
+                                ✅ Service Worker 已注册<br>
+                                状态: ${registration.active ? '活跃' : '未激活'}<br>
+                                作用域: ${registration.scope}
+                            </div>
+                        `;
+                    } else {
+                        status.innerHTML = `
+                            <div class="status error">
+                                ❌ Service Worker 未注册
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    status.innerHTML = `
+                        <div class="status error">
+                            ❌ Service Worker 检查失败: ${error.message}
+                        </div>
+                    `;
+                }
+            } else {
+                status.innerHTML = `
+                    <div class="status error">
+                        ❌ 浏览器不支持 Service Worker
+                    </div>
+                `;
+            }
+        }
+        
+        // 测试 PWA 安装
+        function testPWAInstall() {
+            const status = document.getElementById('pwaStatus');
+            
+            if ('serviceWorker' in navigator && 'PushManager' in window) {
+                status.innerHTML = `
+                    <div class="status success">
+                        ✅ PWA 功能支持良好<br>
+                        支持: Service Worker, Push Manager
+                    </div>
+                `;
+            } else {
+                status.innerHTML = `
+                    <div class="status error">
+                        ❌ PWA 功能支持不完整
+                    </div>
+                `;
+            }
+            
+            // 检查安装状态
+            window.addEventListener('beforeinstallprompt', (e) => {
+                status.innerHTML += `
+                    <div class="status info">
+                        💡 应用可以安装到桌面
+                    </div>
+                `;
+            });
+        }
+        
+        // 测试离线模式
+        async function testOfflineMode() {
+            const status = document.getElementById('offlineStatus');
+            
+            if ('caches' in window) {
+                try {
+                    const cacheNames = await caches.keys();
+                    const hasCache = cacheNames.length > 0;
+                    
+                    status.innerHTML = `
+                        <div class="status ${hasCache ? 'success' : 'error'}">
+                            ${hasCache ? '✅' : '❌'} 缓存状态: ${hasCache ? '已缓存' : '未缓存'}<br>
+                            缓存数量: ${cacheNames.length}
+                        </div>
+                    `;
+                } catch (error) {
+                    status.innerHTML = `
+                        <div class="status error">
+                            ❌ 缓存检查失败: ${error.message}
+                        </div>
+                    `;
+                }
+            } else {
+                status.innerHTML = `
+                    <div class="status error">
+                        ❌ 浏览器不支持 Cache API
+                    </div>
+                `;
+            }
+        }
+        
+        // 测试 Manifest
+        async function testManifest() {
+            const status = document.getElementById('manifestStatus');
+            
+            try {
+                const response = await fetch('manifest.json');
+                if (response.ok) {
+                    const manifest = await response.json();
+                    status.innerHTML = `
+                        <div class="status success">
+                            ✅ Manifest 配置正确<br>
+                            名称: ${manifest.name}<br>
+                            显示模式: ${manifest.display}<br>
+                            图标数量: ${manifest.icons.length}
+                        </div>
+                    `;
+                } else {
+                    status.innerHTML = `
+                        <div class="status error">
+                            ❌ Manifest 文件加载失败
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                status.innerHTML = `
+                    <div class="status error">
+                        ❌ Manifest 检查失败: ${error.message}
+                    </div>
+                `;
+            }
+        }
+        
+        // 测试应用功能
+        function testAppFeatures() {
+            const status = document.getElementById('appStatus');
+            
+            // 检查主要功能
+            const features = [
+                { name: '本地存储', check: () => 'localStorage' in window },
+                { name: '会话存储', check: () => 'sessionStorage' in window },
+                { name: '地理位置', check: () => 'geolocation' in navigator },
+                { name: '通知', check: () => 'Notification' in window },
+                { name: '分享', check: () => 'share' in navigator },
+                { name: '剪贴板', check: () => 'clipboard' in navigator }
+            ];
+            
+            let html = '';
+            features.forEach(feature => {
+                const supported = feature.check();
+                html += `
+                    <div class="status ${supported ? 'success' : 'info'}">
+                        ${supported ? '✅' : '📋'} ${feature.name}: ${supported ? '支持' : '不支持'}
+                    </div>
+                `;
+            });
+            
+            status.innerHTML = html;
+        }
+        
+        // 测试性能
+        function testPerformance() {
+            const status = document.getElementById('performanceStatus');
+            
+            if ('performance' in window) {
+                const navigation = performance.getEntriesByType('navigation')[0];
+                const loadTime = navigation.loadEventEnd - navigation.loadEventStart;
+                const domContentLoaded = navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart;
+                
+                status.innerHTML = `
+                    <div class="status success">
+                        ✅ 性能指标<br>
+                        页面加载时间: ${loadTime.toFixed(2)}ms<br>
+                        DOM 加载时间: ${domContentLoaded.toFixed(2)}ms<br>
+                        首屏时间: ${navigation.domContentLoadedEventEnd - navigation.fetchStart}ms
+                    </div>
+                `;
+            } else {
+                status.innerHTML = `
+                    <div class="status error">
+                        ❌ 浏览器不支持 Performance API
+                    </div>
+                `;
+            }
+        }
+        
+        // 页面加载完成后自动检查
+        window.addEventListener('load', function() {
+            checkFiles();
+            testServiceWorker();
+            testPWAInstall();
+            testOfflineMode();
+            testManifest();
+            testAppFeatures();
+            testPerformance();
+        });
+        
+        // 显示加载状态
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('PWA 测试页面已加载');
+        });
+    </script>
+</body>
+</html> 
