@@ -238,14 +238,14 @@ const appsData = {
             url: 'https://coursera.org'
         },
         {
-            id: 'youtube',
-            name: 'YouTube',
+            id: 'bilibili',
+            name: 'bilibili',
             description: '丰富的免费学习视频资源',
             icon: '📺',
             category: '视频学习',
             rating: 4.4,
             users: '2B+',
-            url: 'https://youtube.com'
+            url: 'https://bilibili.com'
         },
         {
             id: 'mdn',
@@ -290,14 +290,14 @@ const appsData = {
             url: 'https://grammarly.com'
         },
         {
-            id: 'google-translate',
-            name: 'Google Translate',
+            id: 'baidu-fanyi',
+            name: '百度翻译',
             description: '强大的在线翻译工具',
             icon: '🌍',
             category: '翻译',
             rating: 4.3,
             users: '500M+',
-            url: 'https://translate.google.com'
+            url: 'https://fanyi.baidu.com'
         },
         {
             id: 'dropbox',
