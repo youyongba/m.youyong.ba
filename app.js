@@ -484,23 +484,103 @@ function bindEvents() {
     const dismissBtn = document.getElementById('dismissBtn');
     const installPrompt = document.getElementById('install-prompt');
     
-    installBtn.addEventListener('click', () => {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    console.log('用户接受了安装');
-                }
-                deferredPrompt = null;
-                installPrompt.classList.remove('show');
-            });
-        }
+    // 调试：检查PWA元素是否存在
+    console.log('🔍 PWA元素检查:', {
+        installBtn: !!installBtn,
+        dismissBtn: !!dismissBtn,
+        installPrompt: !!installPrompt
     });
     
-    dismissBtn.addEventListener('click', () => {
-        installPrompt.classList.remove('show');
-        localStorage.setItem('pwa-dismissed', 'true');
-    });
+    // 调试：检查元素的实际状态
+    if (installBtn) {
+        console.log('📱 安装按钮状态:', {
+            style: window.getComputedStyle(installBtn),
+            pointerEvents: window.getComputedStyle(installBtn).pointerEvents,
+            cursor: window.getComputedStyle(installBtn).cursor,
+            zIndex: window.getComputedStyle(installBtn).zIndex
+        });
+    }
+    
+    if (dismissBtn) {
+        console.log('❌ 取消按钮状态:', {
+            style: window.getComputedStyle(dismissBtn),
+            pointerEvents: window.getComputedStyle(dismissBtn).pointerEvents,
+            cursor: window.getComputedStyle(dismissBtn).cursor,
+            zIndex: window.getComputedStyle(dismissBtn).zIndex
+        });
+    }
+    
+    // 确保PWA安装相关元素都存在后再绑定事件
+    if (installBtn && dismissBtn && installPrompt) {
+        console.log('✅ PWA安装按钮事件绑定开始...');
+        
+        installBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('安装按钮被点击, deferredPrompt:', deferredPrompt);
+            
+            if (deferredPrompt) {
+                // 标准PWA安装流程
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('用户接受了安装');
+                        alert('🎉 应用正在安装到桌面！');
+                    } else {
+                        console.log('用户拒绝了安装');
+                    }
+                    deferredPrompt = null;
+                    installPrompt.classList.remove('show');
+                });
+            } else {
+                // 备用方案：为不支持beforeinstallprompt的浏览器提供指引
+                showInstallInstructions();
+            }
+        });
+        
+        dismissBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('✅ 取消按钮被点击');
+            
+            if (installPrompt) {
+                installPrompt.classList.remove('show');
+                console.log('✅ 安装提示已隐藏');
+            }
+            
+            localStorage.setItem('pwa-dismissed', 'true');
+            console.log('✅ 已记录用户拒绝安装');
+        });
+        
+        console.log('✅ PWA安装按钮事件绑定完成');
+        
+        // 添加全局测试函数
+        window.testPWAButtons = function() {
+            console.log('🧪 开始测试PWA按钮...');
+            
+            // 测试安装按钮
+            if (installBtn) {
+                console.log('🔘 点击安装按钮测试...');
+                installBtn.click();
+            }
+            
+            // 测试取消按钮（延迟1秒执行）
+            setTimeout(() => {
+                if (dismissBtn) {
+                    console.log('🔘 点击取消按钮测试...');
+                    dismissBtn.click();
+                }
+            }, 1000);
+        };
+        
+        console.log('💡 提示：在控制台中输入 testPWAButtons() 来测试按钮功能');
+    } else {
+        console.error('❌ PWA安装元素未找到:', {
+            installBtn: !!installBtn,
+            dismissBtn: !!dismissBtn,
+            installPrompt: !!installPrompt
+        });
+    }
     
     // 侧边菜单功能
     const menuBtn = document.getElementById('menuBtn');
@@ -774,23 +854,51 @@ function showAppDetail(appId) {
 
 // 检查PWA安装
 function checkPWAInstall() {
+    console.log('🔍 检查PWA安装支持...');
+    
+    // 添加更多调试信息
+    console.log('浏览器信息:', {
+        userAgent: navigator.userAgent,
+        standalone: window.navigator.standalone,
+        beforeinstallprompt: 'beforeinstallprompt' in window
+    });
+    
     window.addEventListener('beforeinstallprompt', (e) => {
+        console.log('✅ beforeinstallprompt 事件触发');
         e.preventDefault();
         deferredPrompt = e;
         
         // 如果用户之前没有拒绝过，显示安装提示
         if (!localStorage.getItem('pwa-dismissed')) {
             setTimeout(() => {
-                document.getElementById('install-prompt').classList.add('show');
+                const installPromptEl = document.getElementById('install-prompt');
+                if (installPromptEl) {
+                    installPromptEl.classList.add('show');
+                    console.log('📱 显示安装提示');
+                }
             }, 3000);
         }
     });
     
     // 检查是否已经安装
     window.addEventListener('appinstalled', (evt) => {
-        console.log('PWA已安装');
-        document.getElementById('install-prompt').classList.remove('show');
+        console.log('✅ PWA已安装');
+        const installPromptEl = document.getElementById('install-prompt');
+        if (installPromptEl) {
+            installPromptEl.classList.remove('show');
+        }
     });
+    
+    // 备用方案：如果5秒后仍然没有触发beforeinstallprompt，显示安装提示
+    setTimeout(() => {
+        if (!deferredPrompt && !localStorage.getItem('pwa-dismissed')) {
+            console.log('⚠️ beforeinstallprompt 未触发，显示备用安装提示');
+            const installPromptEl = document.getElementById('install-prompt');
+            if (installPromptEl) {
+                installPromptEl.classList.add('show');
+            }
+        }
+    }, 5000);
 }
 
 // 分享功能
@@ -843,7 +951,7 @@ function createAboutModal() {
             </div>
             <div class="modal-body">
                 <div style="text-align: center; margin-bottom: 1.5rem;">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🚀</div>
+                    <img src="logo.svg" alt="Logo" style="width: 60px; height: 60px; margin-bottom: 1rem;">
                     <h2 style="margin: 0; color: #6366f1;">AI与Web3导航</h2>
                     <p style="color: #6b7280; margin: 0.5rem 0;">v1.0.0</p>
                 </div>
@@ -926,4 +1034,141 @@ window.addEventListener('load', function() {
     }, 3000);
 });
 
-console.log('AI与Web3导航应用已加载完成 🚀'); 
+// PWA安装指导函数 - 为不支持beforeinstallprompt的浏览器提供手动安装指引
+function showInstallInstructions() {
+    console.log('📱 显示PWA安装指导');
+    
+    // 检测浏览器类型
+    const userAgent = navigator.userAgent.toLowerCase();
+    const isIOS = /iphone|ipad|ipod/.test(userAgent);
+    const isSafari = /safari/.test(userAgent) && !/chrome/.test(userAgent);
+    const isChrome = /chrome/.test(userAgent);
+    const isEdge = /edge/.test(userAgent);
+    const isFirefox = /firefox/.test(userAgent);
+    
+    let instructions = '';
+    let browserName = '浏览器';
+    
+    // 根据不同浏览器提供不同的安装指引
+    if (isIOS) {
+        browserName = 'Safari';
+        instructions = `
+            <h4>📱 在 iPhone/iPad 上安装：</h4>
+            <ol style="text-align: left; margin: 1rem 0; padding-left: 1.5rem;">
+                <li>点击底部的 <strong>分享按钮 📤</strong></li>
+                <li>向下滚动找到 <strong>"添加到主屏幕"</strong></li>
+                <li>点击 <strong>"添加"</strong> 确认安装</li>
+                <li>应用图标将出现在桌面上！</li>
+            </ol>
+        `;
+    } else if (isSafari) {
+        browserName = 'Safari';
+        instructions = `
+            <h4>🖥️ 在 Safari 上安装：</h4>
+            <ol style="text-align: left; margin: 1rem 0; padding-left: 1.5rem;">
+                <li>点击菜单栏中的 <strong>"文件"</strong></li>
+                <li>选择 <strong>"添加到程序坞"</strong></li>
+                <li>或者在地址栏右侧查找安装图标</li>
+                <li>确认安装后即可在程序坞中找到应用</li>
+            </ol>
+        `;
+    } else if (isChrome) {
+        browserName = 'Chrome';
+        instructions = `
+            <h4>🌐 在 Chrome 上安装：</h4>
+            <ol style="text-align: left; margin: 1rem 0; padding-left: 1.5rem;">
+                <li>查看地址栏右侧的 <strong>安装图标 ⬇️</strong></li>
+                <li>点击图标选择 <strong>"安装应用"</strong></li>
+                <li>或者点击菜单 ⋮ → <strong>"安装应用"</strong></li>
+                <li>确认后应用将安装到桌面</li>
+            </ol>
+        `;
+    } else if (isEdge) {
+        browserName = 'Edge';
+        instructions = `
+            <h4>🔷 在 Edge 上安装：</h4>
+            <ol style="text-align: left; margin: 1rem 0; padding-left: 1.5rem;">
+                <li>点击地址栏右侧的 <strong>安装图标</strong></li>
+                <li>选择 <strong>"安装此站点为应用"</strong></li>
+                <li>或者点击菜单 ⋯ → <strong>"应用" → "将此站点安装为应用"</strong></li>
+                <li>确认安装到桌面</li>
+            </ol>
+        `;
+    } else if (isFirefox) {
+        browserName = 'Firefox';
+        instructions = `
+            <h4>🔥 在 Firefox 上安装：</h4>
+            <ol style="text-align: left; margin: 1rem 0; padding-left: 1.5rem;">
+                <li>Firefox 目前对 PWA 的支持有限</li>
+                <li>建议使用 <strong>Chrome</strong> 或 <strong>Edge</strong> 浏览器</li>
+                <li>或者直接将此页面添加到书签栏</li>
+                <li>以便快速访问</li>
+            </ol>
+        `;
+    } else {
+        instructions = `
+            <h4>🌐 通用安装方法：</h4>
+            <ol style="text-align: left; margin: 1rem 0; padding-left: 1.5rem;">
+                <li>查找地址栏附近的 <strong>安装图标</strong></li>
+                <li>或查看浏览器菜单中的 <strong>"安装应用"</strong> 选项</li>
+                <li>点击确认安装到桌面</li>
+                <li>也可以将此页面添加到收藏夹</li>
+            </ol>
+        `;
+    }
+    
+    // 创建安装指导模态框
+    const modal = document.createElement('div');
+    modal.className = 'modal show';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📱 安装到桌面</h3>
+                <button class="modal-close" onclick="this.closest('.modal').remove()">×</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; margin-bottom: 1.5rem;">
+                    <img src="logo.svg" alt="Logo" style="width: 60px; height: 60px; margin-bottom: 1rem;">
+                    <h2 style="margin: 0; color: #e56045;">AI与Web3导航</h2>
+                    <p style="color: #6b7280; margin: 0.5rem 0;">将应用安装到${browserName}桌面</p>
+                </div>
+                
+                ${instructions}
+                
+                <div style="background: #f8fafc; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0;">
+                    <h4 style="color: #374151; margin: 0 0 0.5rem 0;">✨ 安装后的优势：</h4>
+                    <ul style="color: #6b7280; margin: 0; padding-left: 1.5rem; text-align: left;">
+                        <li>🚀 更快的启动速度</li>
+                        <li>📱 独立的应用窗口</li>
+                        <li>🔒 离线访问支持</li>
+                        <li>🎯 桌面快捷方式</li>
+                    </ul>
+                </div>
+                
+                <div style="text-align: center; margin-top: 1rem;">
+                    <button onclick="this.closest('.modal').remove()" 
+                            style="background: #e56045; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 0.5rem; cursor: pointer; font-size: 1rem;">
+                        我知道了
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // 点击外部关闭
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+    
+    document.body.appendChild(modal);
+    
+    // 隐藏原安装提示
+    const installPromptEl = document.getElementById('install-prompt');
+    if (installPromptEl) {
+        installPromptEl.classList.remove('show');
+    }
+}
+
+console.log('🤖 AI与Web3导航应用已加载完成'); 

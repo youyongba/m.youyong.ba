@@ -9,7 +9,7 @@
     
     <!-- PWA相关 -->
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
     
     <!-- 预连接 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,7 +24,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #e56045 0%, #cc553d 100%);
             color: white;
             height: 100vh;
             overflow: hidden;
@@ -49,14 +49,12 @@
             height: 120px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
             margin: 0 auto 1.5rem;
             animation: bounce 2s infinite;
             backdrop-filter: blur(10px);
             border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            box-sizing: border-box;
         }
 
         .logo-text {
@@ -178,7 +176,7 @@
         /* 深色模式检测 */
         @media (prefers-color-scheme: dark) {
             body {
-                background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+                background: linear-gradient(135deg, #1a1a1a 0%, #4d4d4d 100%);
             }
         }
 
@@ -208,7 +206,7 @@
 <body>
     <div class="splash-container">
         <div class="logo-container">
-            <div class="logo-icon">🚀</div>
+            <img src="logo.svg" alt="Logo" class="logo-icon" width="80" height="80">
             <h1 class="logo-text">AI导航</h1>
             <p class="logo-subtitle">AI与Web3技术导航平台</p>
         </div>
